@@ -12,13 +12,13 @@ if (process.env.NODE_ENV !== 'production') {
   }
   
 
-const PORT = process.env.PORT || 8080
+const PORT = process.env.PORT
 var con
 try {
      con = mysql.createConnection({
-        host: process.env.SQL_HOST || "35.197.247.91",
-        user: process.env.SQL_USER || "root",
-        password: process.env.SQL_PASS || "asdf1234",
+        host: process.env.SQL_HOST, 
+        user: process.env.SQL_USER,
+        password: process.env.SQL_PASS, 
         database: "employee_schema"
       })
 } catch (e) {
