@@ -28,7 +28,7 @@ try {
 app.get('/employees', (req, res) => {
     var ip = req.headers['x-real-ip'] || req.connection.remoteAddress
     console.log("FETCH EMPLOYEES request from " + ip + " at " + getTime())
-    
+
     if (!req.query.page || !req.query.items 
         || isNaN(parseInt(req.query.page)) || isNaN(parseInt(req.query.items))){
         res.sendStatus(400)
@@ -50,7 +50,7 @@ app.get('/employees', (req, res) => {
 
 app.get('/count', (req, res) => {
     getEmployeeCount().then(result => {
-        console.log(result)
+        res.json(result)
     }).catch(err => {
         console.log(err.code)
         if (err.code === 'ETIMEDOUT'){
@@ -95,7 +95,7 @@ function getEmployees(page, rowsPerPage){
 
 function getEmployeeCount(){
     return new Promise((resolve, reject) => {
-        con.query('COUNT( select * from employee_data )', function(err, result, fields){
+        con.query('select count(employee_id) as employee_count from employee_data', function(err, result, fields){
             if (err){ 
                 reject(err)
             } else {
