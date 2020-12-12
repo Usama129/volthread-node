@@ -1,6 +1,7 @@
 const express = require("express")
 const mysql = require('mysql');
 const moment = require('moment-timezone');
+const dateParser = require('node-date-parser')
 var cors = require('cors');
 const { ETIMEDOUT } = require("constants");
 const app = express()
@@ -10,9 +11,9 @@ const PORT = process.env.PORT || 8080
 var con
 try {
      con = mysql.createConnection({
-        host: process.env.SQL_HOST  ,
-        user: process.env.SQL_USER ,
-        password: process.env.SQL_PASS ,
+        host: process.env.SQL_HOST || "35.197.247.91",
+        user: process.env.SQL_USER || "root",
+        password: process.env.SQL_PASS || "asdf1234",
         database: "employee_schema"
       })
 } catch (e) {
@@ -41,7 +42,18 @@ function getAllEmployees(){
             if (err){ 
                 reject(err)
               } else {
-                  resolve(result)
+                  employees = []
+                  for (row of result){
+                    row.birth_date = dateParser.parse("d/m/Y", row.birth_date)
+                    row.join_date = dateParser.parse("d/m/Y", row.join_date)
+                    if (row.gender === 'M'){
+                        row.gender = "Male"
+                    } else {
+                        row.gender = "Female"
+                    }
+                    employees.push(row)
+                  }
+                  resolve(employees)
               }
             //google_con.query("INSERT INTO employee_data (`employee_id`,`name`,`surname`,`join_date`,`gender`,`birth_date` ) VALUES('"+row.emp_no+"', '"+row.first_name+"','"+row.last_name+"','"+dateParser.parse('Y-m-d', row.hire_date)+"','"+row.gender+"','"+dateParser.parse('Y-m-d', row.birth_date)+"');")
           })
