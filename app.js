@@ -10,9 +10,9 @@ const PORT = process.env.PORT || 8080
 var con
 try {
      con = mysql.createConnection({
-        host: process.env.SQL_HOST || "35.197.247.91",
-        user: process.env.SQL_USER || "root",
-        password: process.env.SQL_PASS || "asdf1234",
+        host: process.env.SQL_HOST  ,
+        user: process.env.SQL_USER ,
+        password: process.env.SQL_PASS ,
         database: "employee_schema"
       })
 } catch (e) {
