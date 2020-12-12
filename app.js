@@ -28,7 +28,14 @@ try {
 app.get('/employees', (req, res) => {
     var ip = req.headers['x-real-ip'] || req.connection.remoteAddress
     console.log("FETCH EMPLOYEES request from " + ip + " at " + getTime())
-    getEmployees(req.query.page, req.query.items).then(result => {
+    
+    if (!req.query.page || !req.query.items 
+        || isNaN(parseInt(req.query.page)) || isNaN(parseInt(req.query.items))){
+        res.sendStatus(400)
+        return
+    }
+
+    getEmployees(parseInt(req.query.page), parseInt(req.query.items)).then(result => {
         res.json(result)
     }).catch(err => {
         console.log(err.code)
@@ -39,6 +46,20 @@ app.get('/employees', (req, res) => {
         }
         res.sendStatus(500)
      })
+})
+
+app.get('/count', (req, res) => {
+    getEmployeeCount().then(result => {
+        console.log(result)
+    }).catch(err => {
+        console.log(err.code)
+        if (err.code === 'ETIMEDOUT'){
+            console.log("Connection to MySQL instance on Google Cloud timed out - check permissions and allowed network addresses on Google Cloud.")
+        } else if (err.code === 'PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR') {
+            console.log("DB access was attempted after a fatal error. Redeploy!")
+        }
+        res.sendStatus(500)
+    })
 })
 
 function getEmployees(page, rowsPerPage){
@@ -70,6 +91,18 @@ function getEmployees(page, rowsPerPage){
             })
     })
     
+}
+
+function getEmployeeCount(){
+    return new Promise((resolve, reject) => {
+        con.query('COUNT( select * from employee_data )', function(err, result, fields){
+            if (err){ 
+                reject(err)
+            } else {
+                resolve(result)
+            }
+        })
+    })
 }
 
 function getTime(){
