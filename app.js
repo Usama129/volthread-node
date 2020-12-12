@@ -20,7 +20,8 @@ try {
 }
 
 app.get('/all', (req, res) => {
-    console.log("FETCH ALL request from " + req.connection.remoteAddress + " at " + getTime())
+    var ip = req.headers['x-real-ip'] || req.connection.remoteAddress
+    console.log("FETCH ALL request from " + ip + " at " + getTime())
         getAllEmployees().then(result => {
             res.json(result)
         }).catch(err => {
