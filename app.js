@@ -1,24 +1,23 @@
 const express = require("express")
 const mysql = require('mysql');
+const moment = require('moment-timezone');
 var cors = require('cors');
 const { ETIMEDOUT } = require("constants");
 const app = express()
 app.use(cors())
 
-const PORT = process.env.PORT
-const sqlHost = process.env.SQL_HOST 
-const sqlUser = process.env.SQL_USER 
-const sqlPwd = process.env.SQL_PASS
+const PORT = process.env.PORT || 8080
 
 const con = mysql.createConnection({
-    host: sqlHost,
-    user: sqlUser,
-    password: sqlPwd,
+    host: process.env.SQL_HOST,
+    user: process.env.SQL_USER,
+    password: process.env.SQL_PASS,
     database: "employee_schema"
   });
 
 app.get('/all', (req, res) => {
-        getAllEmployees(req).then(result => {
+    console.log("FETCH ALL request from " + req.connection.remoteAddress + " at " + getTime())
+        getAllEmployees().then(result => {
             res.json(result)
         }).catch(err => {
             console.log(err.code)
@@ -29,8 +28,7 @@ app.get('/all', (req, res) => {
         })
 })
 
-function getAllEmployees(req){
-    console.log("Fetching all employees at " + new Date() + ". Request initiated by " + req.connection.remoteAddress)
+function getAllEmployees(){
     return new Promise((resolve, reject) => {
         con.connect(function(err) {
             if (err){
@@ -48,4 +46,9 @@ function getAllEmployees(req){
     })
     
 }
+
+function getTime(){
+    return moment().tz("Asia/Istanbul").format("MMMM Do YYYY, h:mm:ss a") + " GMT+3"
+}
+
 app.listen(PORT, err => { console.log("Listening at " + PORT) }) 

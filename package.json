@@ -12,6 +12,8 @@
   "dependencies": {
     "cors": "^2.8.5",
     "express": "^4.17.1",
+    "moment": "^2.29.1",
+    "moment-timezone": "^0.5.32",
     "mysql": "^2.18.1",
     "node-date-parser": "^1.0.12"
   }
