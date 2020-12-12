@@ -7,6 +7,11 @@ const { ETIMEDOUT } = require("constants");
 const app = express()
 app.use(cors())
 
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+  }
+  
+
 const PORT = process.env.PORT || 8080
 var con
 try {
