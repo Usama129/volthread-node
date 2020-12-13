@@ -27,7 +27,7 @@ try {
 }
 
 app.get('/employees', (req, res) => {
-    var ip = req.headers['x-real-ip'] || req.connection.remoteAddress
+    var ip = req.headers['X-Forwarded-For'] 
     console.log("FETCH EMPLOYEES request from " + ip + " at " + getTime())
 
     if (!req.query.page || !req.query.items 
@@ -66,7 +66,7 @@ app.get('/count', (req, res) => {
 app.post('/add', express.json(), [
     body("id").isInt(),
     body("birth_date").isDate('DD/MM/YYYY'),
-    body("join_date").isDate('DD/MM/YYYY')
+    body("join_date").isDate('DD/MM/YYYY'),
 ],(req, res) => {
     console.log("ADD EMPLOYEE request at " + getTime())
 
