@@ -32,26 +32,33 @@ app.get('/employees', (req, res) => {
 
     if (!req.query.page || !req.query.items 
         || isNaN(parseInt(req.query.page)) || isNaN(parseInt(req.query.items))){
+            console.log("REJECTED - Bad Params")
         res.sendStatus(400)
         return
     }
 
     getEmployees(parseInt(req.query.page), parseInt(req.query.items)).then(result => {
         res.json(result)
+        console.log("Returned " + req.query.items + " items for page " + req.query.page + " to " + ip)
     }).catch(err => {
         console.log(err.code)
         if (err.code === 'ETIMEDOUT'){
-             console.log("Connection to MySQL instance on Google Cloud timed out - check permissions and allowed network addresses on Google Cloud.")
+             console.log("Sending error 500 - connection to MySQL instance on Google Cloud timed out - check permissions and allowed network addresses on Google Cloud.")
         } else if (err.code === 'PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR') {
-             console.log("DB access was attempted after a fatal error. Redeploy!")
+             console.log("Sending error 500 - DB access was attempted after a fatal error. Redeploy!")
         }
         res.sendStatus(500)
      })
 })
 
 app.get('/count', (req, res) => {
+
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
+    console.log("COUNT EMPLOYEES request from " + ip + " at " + getTime())
+
     getEmployeeCount().then(result => {
         res.json(result)
+        console.log("Count: " + result[0].employee_count + " returned to " + ip)
     }).catch(err => {
         console.log(err.code)
         if (err.code === 'ETIMEDOUT'){
@@ -68,10 +75,13 @@ app.post('/add', express.json(), [
     body("birth_date").isDate('DD/MM/YYYY'),
     body("join_date").isDate('DD/MM/YYYY'),
 ],(req, res) => {
-    console.log("ADD EMPLOYEE request at " + getTime())
+
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
+    console.log("ADD EMPLOYEE request from " + ip + " at " + getTime())
 
     const valResult = validationResult(req);
     if (!valResult.isEmpty()) {
+        console.log("REJECTED:")
         for (item of valResult.errors){
             console.log("Invalid value for " + item.param + ": " + item.value)
         }
@@ -80,7 +90,7 @@ app.post('/add', express.json(), [
 
     addEmployee(req.body).then(result => {
 
-        console.log("Employee " + result.name + ", ID: " + result.id + " added successfully")
+        console.log("Employee " + result.name + ", ID: " + result.id + " added to database")
         res.json({submit:"successful"})
 
     }).catch(err => {
