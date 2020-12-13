@@ -27,7 +27,7 @@ try {
 }
 
 app.get('/employees', (req, res) => {
-    var ip = req.headers['X-Forwarded-For'] 
+    var ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress
     console.log("FETCH EMPLOYEES request from " + ip + " at " + getTime())
 
     if (!req.query.page || !req.query.items 
