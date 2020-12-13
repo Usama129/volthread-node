@@ -7,7 +7,6 @@ var cors = require('cors')
 const { ETIMEDOUT } = require("constants");
 const app = express()
 app.use(cors())
-
 if (process.env.NODE_ENV !== 'production') {
     require('dotenv').config()
   }
@@ -39,7 +38,7 @@ app.get('/employees', (req, res) => {
 
     getEmployees(parseInt(req.query.page), parseInt(req.query.items)).then(result => {
         res.json(result)
-        console.log("Returned " + req.query.items + " items for page " + req.query.page + " to " + ip)
+        console.log("Returned " + result.count + " items for page " + req.query.page + " to " + ip)
     }).catch(err => {
         console.log(err.code)
         if (err.code === 'ETIMEDOUT'){
@@ -201,4 +200,4 @@ function getTime(){
     return moment().tz("Asia/Istanbul").format("MMMM Do YYYY, h:mm:ss a") + " GMT+3"
 }
 
-app.listen(PORT, err => { console.log("Listening at " + PORT) }) 
+app.listen(PORT, err => { console.log("Starting listening at port " + PORT + " at " + getTime()) }) 
