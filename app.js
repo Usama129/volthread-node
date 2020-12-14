@@ -57,7 +57,7 @@ app.get('/count', (req, res) => {
 
     getEmployeeCount().then(result => {
         res.json(result)
-        console.log("Count: " + result[0].employee_count + " returned to " + ip)
+        console.log("Count: " + result[0].employeeCount + " returned to " + ip)
     }).catch(err => {
         console.log(err.code)
         if (err.code === 'ETIMEDOUT'){
@@ -153,7 +153,7 @@ function getEmployees(page, rowsPerPage){
 function getEmployeeCount(row){
     
     return new Promise((resolve, reject) => {
-        con.query("select count(id) as employee_count from employee_data", function(err, result, fields){
+        con.query("select count(id) as employeeCount from employee_data", function(err, result, fields){
             if (err){ 
                 reject(err)
             } else {
