@@ -133,8 +133,8 @@ function getEmployees(page, rowsPerPage){
                     var count = 0
                     for (row of result){
                         count += 1
-                        row.birth_date = dateParser.parse("d/m/Y", row.birth_date)
-                        row.join_date = dateParser.parse("d/m/Y", row.join_date)
+                        row.birthDate = dateParser.parse("d/m/Y", row.birthDate)
+                        row.joinDate = dateParser.parse("d/m/Y", row.joinDate)
                         if (row.gender === 'M'){
                             row.gender = "Male"
                         } else {
