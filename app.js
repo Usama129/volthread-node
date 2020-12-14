@@ -121,7 +121,7 @@ app.post('/add', express.json(), [
 function getEmployees(page, rowsPerPage){
 
     let offset = (rowsPerPage * page) - rowsPerPage
-    let query = (page === 0 && rowsPerPage === 0) ? "select * from employee_data"
+    let query = (page === 0 || rowsPerPage === 0) ? "select * from employee_data"
         : "select * from employee_data limit " + offset + ", " + rowsPerPage
     return new Promise((resolve, reject) => {
         con.query(query, 
