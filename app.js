@@ -153,7 +153,7 @@ function getEmployees(page, rowsPerPage){
 function getEmployeeCount(row){
     
     return new Promise((resolve, reject) => {
-        con.query("select count(employee_id) as employee_count from employee_data", function(err, result, fields){
+        con.query("select count(id) as employee_count from employee_data", function(err, result, fields){
             if (err){ 
                 reject(err)
             } else {
