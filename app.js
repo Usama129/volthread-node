@@ -186,7 +186,7 @@ function addEmployee(employee){
             return
         }
 
-        con.query("INSERT INTO employee_data (`employee_id`,`name`,`surname`,`join_date`,`gender`,`birth_date` ) VALUES('"+row.id+"', '"+row.name+"','"+row.surname+"','"+dateParser.parse('Y-m-d', row.join_date)+"','"+row.gender+"','"+dateParser.parse('Y-m-d', row.birth_date)+"');", 
+        con.query("INSERT INTO employee_data (`id`,`name`,`surname`,`joinDate`,`gender`,`birthDate` ) VALUES('"+row.id+"', '"+row.name+"','"+row.surname+"','"+dateParser.parse('Y-m-d', row.join_date)+"','"+row.gender+"','"+dateParser.parse('Y-m-d', row.birth_date)+"');", 
         function(err, result, fields){
             if (err){ 
                 reject({id: row.id, sql: err})
